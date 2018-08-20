@@ -6,7 +6,7 @@ import tensorflow as tf
 
 
 class Model():
-    def __init__(self, learning_rate=0.001, batch_size=16, num_steps=32, num_words=5000, dim_embedding=128, rnn_layers=3,is_training=True):
+    def __init__(self, learning_rate=0.001, batch_size=16, num_steps=32, num_words=5000, dim_embedding=128, rnn_layers=3,is_training=1):
         r"""初始化函数
 
         Parameters
@@ -36,7 +36,7 @@ class Model():
     
     def make_cell(self):
         cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding,name='lstm_cell')
-        if self.is_training == True and self.keep_prob < 1:
+        if self.is_training == 1 and self.keep_prob < 1:
             cell = tf.nn.rnn_cell.DropoutWrapper(cell,output_keep_prob=self.keep_prob)
         return cell
 		
