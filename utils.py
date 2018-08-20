@@ -32,19 +32,31 @@ def get_train_data(vocabulary, batch_size, num_steps):
     ##################
     # Your Code here
     ##################
-    raw_x = vocabulary
-    raw_y = vocabulary[1:]
-    data_length = len(raw_x)
-    batch_partition_length = data_length//batch_size
-    data_x = np.zeros([batch_size, batch_partition_length], dtype=np.int32)
-    data_y = np.zeros([batch_size, batch_partition_length], dtype=np.int32)
+    # raw_x = vocabulary
+    # raw_y = vocabulary[1:]
+    # data_length = len(raw_x)
+    # batch_partition_length = data_length//batch_size
+    # data_x = np.zeros([batch_size, batch_partition_length], dtype=np.int32)
+    # data_y = np.zeros([batch_size, batch_partition_length], dtype=np.int32)
+    # for i in range(batch_size):
+    #     data_x[i] = raw_x[batch_partition_length * i:batch_partition_length * (i + 1)]
+    #     data_y[i] = raw_y[batch_partition_length * i:batch_partition_length * (i + 1)]
+    # epoch_size = batch_partition_length // num_steps
+    # for i in range(epoch_size):
+    #     x = data_x[:, i * num_steps:(i + 1) * num_steps]
+    #     y = data_y[:, i * num_steps:(i + 1) * num_steps]
+    #     yield (x, y)
+    raw_data = vocabulary
+    data_len = len(raw_data)
+    batch_len = data_len // batch_size
+    data = [[0]*batch_len]*batch_size
     for i in range(batch_size):
-        data_x[i] = raw_x[batch_partition_length * i:batch_partition_length * (i + 1)]
-        data_y[i] = raw_y[batch_partition_length * i:batch_partition_length * (i + 1)]
-    epoch_size = batch_partition_length // num_steps
+        data[i] = raw_data[batch_len * i:batch_len * (i + 1)]
+    epoch_size = (batch_len - 1) // num_steps
+    data = np.array(data)
     for i in range(epoch_size):
-        x = data_x[:, i * num_steps:(i + 1) * num_steps]
-        y = data_y[:, i * num_steps:(i + 1) * num_steps]
+        x = data[:, i*num_steps: (i+1)*num_steps]
+        y = data[:, i*num_steps+1: (i+1)*num_steps+1]
         yield (x, y)
 
 
