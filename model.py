@@ -6,7 +6,7 @@ import tensorflow as tf
 
 
 class Model():
-    def __init__(self, learning_rate=0.001, batch_size=16, num_steps=32, num_words=5000, dim_embedding=128, rnn_layers=3,is_training=1):
+    def __init__(self, learning_rate=0.001, batch_size=16, num_steps=32, num_words=5000, dim_embedding=128, rnn_layers=3):
         r"""初始化函数
 
         Parameters
@@ -33,6 +33,11 @@ class Model():
         self.rnn_layers = rnn_layers
         self.learning_rate = learning_rate
         self.is_training = is_training
+    def make_cell(self):
+        cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding, name='lstm_cell')
+        if self.is_training == 1 and self.keep_prob < 1:
+            cell = tf.nn.rnn_cell.DropoutWrapper(cell, output_keep_prob=self.keep_prob)
+        return cell
 
     def build(self, embedding_file=None):
         # global step
@@ -45,7 +50,7 @@ class Model():
             tf.int32, shape=[None, self.num_steps], name='label')
 
         self.keep_prob = tf.placeholder(tf.float32, name='keep_prob')
-
+        self.is_training = tf.placeholder(tf.int32, name='is_training')
         with tf.variable_scope('embedding'):
             if embedding_file:
                 # if embedding file provided, use it.
@@ -63,10 +68,7 @@ class Model():
             ##################
             # Your Code here
             ##################
-            lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding, name='lstm_cell')
-            if self.is_training == 1 and self.keep_prob < 1:
-                lstm_cell = tf.nn.rnn_cell.DropoutWrapper(lstm_cell, output_keep_prob=self.keep_prob)
-            lstm_cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell for i in range(self.rnn_layers)])
+            lstm_cell = tf.nn.rnn_cell.MultiRNNCell([make_cell() for i in range(self.rnn_layers)])
             self.state_tensor = lstm_cell.zero_state(self.batch_size,dtype=tf.float32)
             seq_output,self.outputs_state_tensor = tf.nn.dynamic_rnn(lstm_cell,data,initial_state=self.state_tensor)
 

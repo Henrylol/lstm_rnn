@@ -69,7 +69,8 @@ with tf.Session() as sess:
         for i in range(64):
             feed_dict = {model.X: [[word_index]],
                          model.state_tensor: state,
-                         model.keep_prob: 1.0}
+                         model.keep_prob: 1.0,
+                         model.is_training:0}
 
             pred, state = sess.run(
                 [model.predictions, model.outputs_state_tensor], feed_dict=feed_dict)
