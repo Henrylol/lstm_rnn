@@ -34,7 +34,7 @@ class Model():
         self.learning_rate = learning_rate
 
     def make_cell(self):
-        cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding, name='lstm_cell')
+        cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding)
         if self.is_training == 1 and self.keep_prob < 1:
             cell = tf.nn.rnn_cell.DropoutWrapper(cell, output_keep_prob=self.keep_prob)
         return cell
