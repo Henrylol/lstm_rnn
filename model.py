@@ -35,7 +35,7 @@ class Model():
         self.is_training = is_training
     
     def make_cell(self):
-        cell = tf.nn.rnn_cell.BasicLSTMCELL(num_units=self.dim_embedding,name='lstm_cell')
+        cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding,name='lstm_cell')
         if self.is_training and self.keep_prob < 1:
             cell = tf.nn.rnn_cell.DropoutWrapper(cell,output_keep_prob=self.keep_prob)
         return cell
