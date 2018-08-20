@@ -59,7 +59,7 @@ with tf.Session() as sess:
             ##################
             X = utils.index_data(dl[0],dictionary)
             Y = utils.index_data(dl[1],dictionary)
-            feed_dict = {model.X:X,model.Y:Y,model.state_tensor:state,model.keep_prob:0.7,model.is_traning:1}
+            feed_dict = {model.X:X,model.Y:Y,model.state_tensor:state,model.keep_prob:0.7,model.is_training:1}
             gs, _, state, l, summary_string = sess.run(
                 [model.global_step, model.optimizer, model.outputs_state_tensor, model.loss, model.merged_summary_op], feed_dict=feed_dict)
             summary_string_writer.add_summary(summary_string, gs)
