@@ -33,14 +33,7 @@ class Model():
         self.rnn_layers = rnn_layers
         self.learning_rate = learning_rate
         self.is_training = is_training
-    
-    def make_cell(self):
-        cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding,name='lstm_cell')
-        if self.is_training == 1 and self.keep_prob < 1:
-            cell = tf.nn.rnn_cell.DropoutWrapper(cell,output_keep_prob=self.keep_prob)
-        return cell
-		
-		
+
     def build(self, embedding_file=None):
         # global step
         self.global_step = tf.Variable(
@@ -70,9 +63,13 @@ class Model():
             ##################
             # Your Code here
             ##################
-            lstm_cell = tf.nn.rnn_cell.MultiRNNCell([self.make_cell() for _ in range(self.rnn_layers)])
+            lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding, name='lstm_cell')
+            if self.is_training == 1 and self.keep_prob < 1:
+                lstm_cell = tf.nn.rnn_cell.DropoutWrapper(lstm_cell, output_keep_prob=self.keep_prob)
+            lstm_cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell for i in range(self.rnn_layers)])
             self.state_tensor = lstm_cell.zero_state(self.batch_size,dtype=tf.float32)
             seq_output,self.outputs_state_tensor = tf.nn.dynamic_rnn(lstm_cell,data,initial_state=self.state_tensor)
+
 		# flatten it
         seq_output_final = tf.reshape(seq_output, [-1, self.dim_embedding])
 
