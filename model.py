@@ -32,7 +32,6 @@ class Model():
         self.dim_embedding = dim_embedding
         self.rnn_layers = rnn_layers
         self.learning_rate = learning_rate
-        self.is_training = is_training
     def make_cell(self):
         cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding, name='lstm_cell')
         if self.is_training == 1 and self.keep_prob < 1:
