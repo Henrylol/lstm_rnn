@@ -32,6 +32,7 @@ class Model():
         self.dim_embedding = dim_embedding
         self.rnn_layers = rnn_layers
         self.learning_rate = learning_rate
+
     def make_cell(self):
         cell = tf.nn.rnn_cell.BasicLSTMCell(num_units=self.dim_embedding, name='lstm_cell')
         if self.is_training == 1 and self.keep_prob < 1:
@@ -67,7 +68,7 @@ class Model():
             ##################
             # Your Code here
             ##################
-            lstm_cell = tf.nn.rnn_cell.MultiRNNCell([make_cell() for i in range(self.rnn_layers)])
+            lstm_cell = tf.nn.rnn_cell.MultiRNNCell([self.make_cell() for i in range(self.rnn_layers)])
             self.state_tensor = lstm_cell.zero_state(self.batch_size,dtype=tf.float32)
             seq_output,self.outputs_state_tensor = tf.nn.dynamic_rnn(lstm_cell,data,initial_state=self.state_tensor)
 
