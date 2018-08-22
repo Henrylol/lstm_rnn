@@ -32,37 +32,27 @@ def get_train_data(vocabulary, batch_size, num_steps):
     ##################
     # Your Code here
     ##################
-    # raw_x = vocabulary
-    # raw_y = vocabulary[1:]
-    # data_length = len(raw_x)
-    # batch_partition_length = data_length//batch_size
-    # data_x = np.zeros([batch_size, batch_partition_length], dtype=np.int32)
-    # data_y = np.zeros([batch_size, batch_partition_length], dtype=np.int32)
-    # for i in range(batch_size):
-    #     data_x[i] = raw_x[batch_partition_length * i:batch_partition_length * (i + 1)]
-    #     data_y[i] = raw_y[batch_partition_length * i:batch_partition_length * (i + 1)]
-    # epoch_size = batch_partition_length // num_steps
-    # for i in range(epoch_size):
-    #     x = data_x[:, i * num_steps:(i + 1) * num_steps]
-    #     y = data_y[:, i * num_steps:(i + 1) * num_steps]
-    #     yield (x, y)
-    raw_data = vocabulary
-    data_len = len(raw_data)
-    batch_len = data_len // batch_size
-    data = [[0]*batch_len]*batch_size
+    raw_x = vocabulary
+    raw_y = vocabulary[1:]
+    data_length = len(raw_x)
+    batch_partition_length = data_length//batch_size
+    data_x = np.zeros([batch_size, batch_partition_length], dtype=np.str_)
+    data_y = np.zeros([batch_size, batch_partition_length], dtype=np.str_)
     for i in range(batch_size):
-        data[i] = raw_data[batch_len * i:batch_len * (i + 1)]
-    epoch_size = (batch_len - 1) // num_steps
-    data = np.array(data)
+        data_x[i] = raw_x[batch_partition_length * i:batch_partition_length * (i + 1)]
+        data_y[i] = raw_y[batch_partition_length * i:batch_partition_length * (i + 1)]
+    epoch_size = batch_partition_length // num_steps
     for i in range(epoch_size):
-        x = data[:, i*num_steps: (i+1)*num_steps]
-        y = data[:, i*num_steps+1: (i+1)*num_steps+1]
+        x = data_x[:, i * num_steps:(i + 1) * num_steps]
+        y = data_y[:, i * num_steps:(i + 1) * num_steps]
         yield (x, y)
+
 
 
 def build_dataset(words, n_words):
     """Process raw inputs into a dataset."""
     count = [['UNK', -1]]
+    #1.使用Counter 类对文本进行个数统计
     count.extend(collections.Counter(words).most_common(n_words - 1))
     dictionary = dict()
     for word, _ in count:
@@ -70,6 +60,7 @@ def build_dataset(words, n_words):
     data = list()
     unk_count = 0
     for word in words:
+        #获取字典中的对应index的value，没有这个index默认的value值为0
         index = dictionary.get(word, 0)
         if index == 0:  # dictionary['UNK']
             unk_count += 1
